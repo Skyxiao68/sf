@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem; 
 using TMPro;
 
+
 public class player : MonoBehaviour
 {   
     [Header("Debug")]
@@ -67,7 +68,9 @@ public class player : MonoBehaviour
 
         Vector2 inputLook = inputControl.Player.Look.ReadValue<Vector2>(); 
         float mouseX = inputLook.x * rotateSpeed * Time.deltaTime;
+        
         transform.Rotate(0, mouseX, 0); 
+        
 
         inputDir = inputControl.Player.Move.ReadValue<Vector2>();
         float xMove = inputDir.x;
