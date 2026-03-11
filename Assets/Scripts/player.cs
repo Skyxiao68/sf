@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem; 
+using TMPro;
 
 public class player : MonoBehaviour
 {   
@@ -27,8 +28,8 @@ public class player : MonoBehaviour
     public Material matExitUnlocked; 
 
     [Header("UI")]
-    public Text tokenText;
-    public Text winText;
+    public TMP_Text tokenText;
+    public TMP_Text winText;
 
     [Header("Sound")]
     public AudioClip tokenClip;
