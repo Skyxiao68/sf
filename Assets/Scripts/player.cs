@@ -1,20 +1,30 @@
-
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem; 
 
 public class player : MonoBehaviour
 {   
+    [Header("Debug")]
+    public Vector2 inputDir;
+    public int collectedTokens = 0;
+
+
+    [Header("Input")]
+    public Player_Input inputControl; 
+
     [Header("Player Settings")]
-    public float movespeed = 5f;
-    public float rotatespeed = 100f;
+    public float moveSpeed = 5f;
+    public float rotateSpeed = 100f;
     private CharacterController cc;
     private Vector3 moveDir; 
+    
+    
 
     [Header("Tokens and Pass")]
     public int totalTokens = 5;
-    private int collectedTokens = 0;
+    
     public GameObject exit; 
-    private Material matExitUnlocked; 
+    public Material matExitUnlocked; 
 
     [Header("UI")]
     public Text tokenText;
@@ -25,19 +35,28 @@ public class player : MonoBehaviour
     public AudioClip winClip;
     private AudioSource audioSource; 
 
-    private bool isGameWin; 
+    private bool isGameWin;
 
+    private void Awake()
+    {
+        inputControl = new Player_Input();
+        cc = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();     
+    }
+
+    private void OnEnable()
+    {
+        inputControl.Enable();
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    {
-      cc = GetComponent<CharacterController>(); 
-      audioSource = GetComponent<AudioSource>();
-
+    {  
       winText.gameObject.SetActive(false);
 
       UpdateTokenUI();
 
-      matExitUnlocked = exit.GetComponent<Renderer>().materials[1];   
+       
+      
     }
 
     // Update is called once per frame
@@ -45,24 +64,34 @@ public class player : MonoBehaviour
     {
         if(isGameWin) return;
 
-        float mouseX = Input.GetAxis("Mouse X") * rotatespeed * Time.deltaTime;
+        Vector2 inputLook = inputControl.Player.Look.ReadValue<Vector2>(); 
+        float mouseX = inputLook.x * rotateSpeed * Time.deltaTime;
         transform.Rotate(0, mouseX, 0); 
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        moveDir =  transform.forward * vertical + transform.right * horizontal;
+        inputDir = inputControl.Player.Move.ReadValue<Vector2>();
+        float xMove = inputDir.x;
+        float yMove = inputDir.y;
+       
+        moveDir =  transform.forward * yMove  + transform.right * xMove;
         moveDir.y = 0;
         moveDir.Normalize();
-        cc.Move(moveDir * movespeed * Time.deltaTime);
+        cc.Move(moveDir * moveSpeed * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        bool inputMenu = inputControl.UI.Cancel.IsPressed() ;
+        if (inputMenu ==true)
         {
             Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = !Cursor.visible;
         }
+
+        if (collectedTokens == totalTokens)
+            {
+                UnlockExit();
+
+            }
     }
 
-    void OTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Token"))
         {
@@ -71,11 +100,7 @@ public class player : MonoBehaviour
             PlaySound(tokenClip); 
             UpdateTokenUI();
 
-            if (collectedTokens == totalTokens);
-            {
-                UnlockExit();
-
-            }
+            
         }   
 
         if (other.CompareTag("Exit") && collectedTokens == totalTokens)
@@ -92,7 +117,16 @@ public class player : MonoBehaviour
 
     void UnlockExit()
     {
-        exit.GetComponent<Renderer>().material = matExitUnlocked; 
+        
+
+       if (matExitUnlocked == null)
+        {
+            Debug.LogError("matExitUnlocked is null");
+            return;
+        }
+
+        exit.GetComponent<Renderer>().material = matExitUnlocked;
+        Debug.Log("Exit Unlocked");
     }
 
     void GameWin()
