@@ -81,12 +81,7 @@ public class player : MonoBehaviour
         moveDir.Normalize();
         cc.Move(moveDir * moveSpeed * Time.deltaTime);
 
-        bool inputMenu = inputControl.UI.Cancel.IsPressed() ;
-        if (inputMenu ==true)
-        {
-            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = !Cursor.visible;
-        }
+        
 
         if (collectedTokens == totalTokens)
             {

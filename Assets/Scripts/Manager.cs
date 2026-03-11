@@ -1,45 +1,123 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEditor;
 
 public class Manager : MonoBehaviour
 {
-    public static Manager instance;
-    private string currentScene;
-    private Player_Input inputControl; 
-
+    
+    public GameObject pauseMenuUI;
+    public GameObject gametut; 
+  
+    private bool isPaused = false;
+    private Player_Input inputControl;
 
     void Awake()
     {
+        
         inputControl = new Player_Input();
-        if (instance == null)
+        
+        
+
+    
+    }
+
+    void OnEnable()
+    {
+        inputControl.Enable();
+        
+       
+    }
+
+    void OnDisable()
+    {
+        inputControl.Disable();
+        
+    }
+
+    public void Start()
+    {
+        Time.timeScale = 0f;
+        gametut.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void Update()
+    {
+        if (inputControl.Player.Submit.WasPressedThisFrame())
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            gametut.SetActive(false);
+            Time.timeScale = 1f;   
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         
-        currentScene = SceneManager.GetActiveScene().name;
-    }
-    
-   
+        
+        if (inputControl.Player.Pause.WasPressedThisFrame())
+        {
+            if (isPaused == true)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                GamePause();
+            }
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (inputControl.Player.Restart.IsPressed() == true)
+        if (inputControl.Player.Restart.WasPressedThisFrame())
         {
             RestartGame();
         }
     }
 
-    public void RestartGame()
+   
+    public void GamePause()
     {
-        SceneManager.LoadScene(currentScene);
+            Debug.Log("pause game");
+        
+            pauseMenuUI.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            isPaused = true;
+        
+    }
+
+    
+    public void ResumeGame()
+    {
+        pauseMenuUI.SetActive(false);
+        Debug.Log("Game Resumed");
+
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        isPaused = false;
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+        Time.timeScale = 1f;
+    }
+
+    public void RestartGame()
+    {
+       
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("Exit Game");
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 }

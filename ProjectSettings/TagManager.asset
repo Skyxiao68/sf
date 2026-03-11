@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Exit
   - Token
+  - PauseMenu
   layers:
   - Default
   - TransparentFX
