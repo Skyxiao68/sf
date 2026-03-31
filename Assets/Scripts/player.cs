@@ -35,7 +35,17 @@ public class player : MonoBehaviour
     [Header("Sound")]
     public AudioClip tokenClip;
     public AudioClip winClip;
+    public AudioClip fragmentClip; 
     private AudioSource audioSource; 
+
+    [Header ("Fragments")]
+    public int totalFragments = 4;
+    private int collectedFragments = 0;
+    public TMP_Text fragmentCountText;
+    public GameObject fragmentPanel;
+    public TMP_Text fragmentDisplayText;
+    public float displayDuration = 2f;
+    private float displayTimer = 0f;
 
     private bool isGameWin;
 
@@ -57,6 +67,12 @@ public class player : MonoBehaviour
 
       UpdateTokenUI();
 
+      UpdateFragmentUI();
+
+      if (fragmentPanel != null)
+      {
+          fragmentPanel.SetActive(false);
+      }
        
       
     }
@@ -81,14 +97,23 @@ public class player : MonoBehaviour
         moveDir.Normalize();
         cc.Move(moveDir * moveSpeed * Time.deltaTime);
 
-        
+        if (displayTimer > 0)
+        {
+            displayTimer -= Time.deltaTime;
+            if (displayTimer <= 0 && fragmentPanel != null)
+            {
+                fragmentPanel.SetActive(false);
+            }
+        }
 
         if (collectedTokens == totalTokens)
             {
                 UnlockExit();
 
             }
+
     }
+    
 
     void OnTriggerEnter(Collider other)
     {
@@ -98,20 +123,46 @@ public class player : MonoBehaviour
             Destroy(other.gameObject);
             PlaySound(tokenClip); 
             UpdateTokenUI();
-
-            
         }   
+        else if (other.CompareTag("Fragment"))
+        {
+            FragmentData data = other.GetComponent<FragmentData>();
+            if (data != null)
+            {
+                collectedFragments++;
+                UpdateFragmentUI();
 
-        if (other.CompareTag("Exit") && collectedTokens == totalTokens)
+                if (fragmentDisplayText != null && fragmentPanel != null)
+                {
+                    fragmentDisplayText.text = data.fragmentText;
+                    fragmentPanel.SetActive(true);
+                    displayTimer = displayDuration;
+                }
+
+                PlaySound(fragmentClip);
+                Destroy(other.gameObject);
+            }
+        }
+        else  if (other.CompareTag("Exit") && collectedTokens == totalTokens)
         {
             GameWin();
         }
+        
+       
 
     }
 
     void UpdateTokenUI()
     {
         tokenText.text = "Tokens: " + collectedTokens + "/" + totalTokens;
+    }
+
+    void UpdateFragmentUI()
+    {
+        if (fragmentCountText != null)
+        {
+            fragmentCountText.text = "Fragments: " + collectedFragments + "/" + totalFragments;
+        }
     }
 
     void UnlockExit()
