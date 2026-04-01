@@ -214,10 +214,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 311354025}
-  - {fileID: 1238196319}
-  - {fileID: 542203666}
-  - {fileID: 1501255504}
-  - {fileID: 1324648477}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -254,7 +250,11 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1238196319}
+  - {fileID: 542203666}
+  - {fileID: 1501255504}
+  - {fileID: 1324648477}
   m_Father: {fileID: 220767991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9929e2aa8df2f0429385a03bccf237b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
+  difficultySceneName: DifficultySelection
   gameSceneName: Level1
 --- !u!4 &339688370
 Transform:
@@ -371,13 +372,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 542203665}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1753637837}
-  m_Father: {fileID: 220767991}
+  m_Father: {fileID: 311354025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -847,13 +848,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238196318}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1250920304}
-  m_Father: {fileID: 220767991}
+  m_Father: {fileID: 311354025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -906,7 +907,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 339688369}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: StartGame
+        m_MethodName: GoToDifficultySelection
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1118,12 +1119,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1324648476}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 220767991}
+  m_Father: {fileID: 311354025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1150,7 +1151,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'V_0.1
+  m_text: 'V_0.2
 
 '
   m_isRightToLeft: 0
@@ -1257,12 +1258,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1501255503}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 220767991}
+  m_Father: {fileID: 311354025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1506,6 +1507,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753637836}
   m_CullTransparentMesh: 1
+--- !u!1001 &2085069915
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 595.54474
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2717.7183
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827790775961927281, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030292186588115507, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: 'story.fullStory.Array.data[0]'
+      value: "\u201CYou have pieced together the story of a forgotten keeper:\r\nLong
+        ago, a guardian built this maze to protect a gift.\r\nThe gift was split
+        into five tokens, each hidden in a branch, so that only the determined could
+        reclaim it.\r\nThe fragments you found were his memories\u2014warnings, hopes,
+        and finally a promise:\r\n\u2018The maze does not trap the lost; it waits
+        for those ready to find their way.\u2019\r\nNow the exit shines, and you
+        step out with the truth.\u201D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210341888637944606, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: db6b3c2b2d919084fb00fca60ea6fc9e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1515,3 +1583,4 @@ SceneRoots:
   - {fileID: 220767991}
   - {fileID: 621972450}
   - {fileID: 339688370}
+  - {fileID: 2085069915}

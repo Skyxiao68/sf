@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: 93b610fddc8949642a964a42c3acfa81
   - enabled: 1
+    path: Assets/Scenes/DifficultySelection.unity
+    guid: e3e26d2df2242f04eba3a542596ab613
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 45cb8d09f100d7b4d9cc962aea80be87
   m_configObjects:

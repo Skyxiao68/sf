@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem; 
 using TMPro;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 
 public class player : MonoBehaviour
@@ -49,6 +51,14 @@ public class player : MonoBehaviour
 
     private bool isGameWin;
 
+    [Header("Particle Effects")]
+    public GameObject pickupEffectPrefab;
+
+    [Header("Story")]
+    public GameObject storyPanel;
+    public TMP_Text storyText;
+    private bool allFragmentCollected = false; 
+
     private void Awake()
     {
         inputControl = new Player_Input();
@@ -60,22 +70,76 @@ public class player : MonoBehaviour
     {
         inputControl.Enable();
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {  
       winText.gameObject.SetActive(false);
-
-      UpdateTokenUI();
-
-      UpdateFragmentUI();
-
+      
       if (fragmentPanel != null)
       {
           fragmentPanel.SetActive(false);
       }
        
+      if (GameManager.Instance != null)
+        {   
+            Debug.Log("Current Difficulty: "+ GameManager.Instance.currentDifficulty);
+            switch (GameManager.Instance.currentDifficulty)
+            {
+                case GameManager.Difficulty.Easy:
+                    moveSpeed = 3f;
+                    totalTokens =3;
+                    totalFragments = 4;
+                    break;
+                case GameManager.Difficulty.Normal:
+                    moveSpeed = 2f;
+                    totalTokens = 5;
+                    totalFragments = 4;
+                    break;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("GameManager.Instance is null Using default values");
+        }
+    
+        if (storyPanel != null)
+        {
+            storyPanel.SetActive(false);
+        }
+
+      Debug.Log($"Total Tokens set to: {totalTokens}, Total Fragments set to: {totalFragments}  ");  
+
+      AdjustCollectibles();    
+
+      UpdateTokenUI();
+
+      UpdateFragmentUI();
       
     }
+
+    void AdjustCollectibles()
+    {
+        GameObject[] tokens = GameObject.FindGameObjectsWithTag("Token");
+        Debug.Log($"Found {tokens.Length} tokens in scene.");
+
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            bool active = i < totalTokens;
+            tokens[i].SetActive(active);
+            Debug.Log($"Token {i}: set active = {active}, name = {tokens[i].name}");
+        }
+
+        GameObject[] fragments = GameObject.FindGameObjectsWithTag("Fragment");
+        Debug.Log($"Found {fragments.Length} fragments in scene.");
+
+        for (int i = 0; i < fragments.Length; i++)
+        {
+            bool active = i < totalFragments;
+            fragments[i].SetActive(active);
+            Debug.Log($"Fragment {i}: set active = {active}, name = {fragments[i].name}");
+        }
+    }
+    
 
     // Update is called once per frame
     void Update()
@@ -115,15 +179,27 @@ public class player : MonoBehaviour
     }
     
 
-    void OnTriggerEnter(Collider other)
+   void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Trigger entered with: {other.tag}");
+
+        if (other.CompareTag("Token") || other.CompareTag("Fragment"))
+        {
+            if (pickupEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(pickupEffectPrefab, other.transform.position, Quaternion.identity);
+                Destroy(effect, 1f);
+            }
+        }
+
         if (other.CompareTag("Token"))
         {
             collectedTokens++;
             Destroy(other.gameObject);
-            PlaySound(tokenClip); 
+            PlaySound(tokenClip);
             UpdateTokenUI();
-        }   
+            Debug.Log($"Collected token. Current: {collectedTokens}/{totalTokens}");
+        }
         else if (other.CompareTag("Fragment"))
         {
             FragmentData data = other.GetComponent<FragmentData>();
@@ -132,24 +208,25 @@ public class player : MonoBehaviour
                 collectedFragments++;
                 UpdateFragmentUI();
 
-                if (fragmentDisplayText != null && fragmentPanel != null)
-                {
-                    fragmentDisplayText.text = data.fragmentText;
-                    fragmentPanel.SetActive(true);
-                    displayTimer = displayDuration;
-                }
-
+                fragmentDisplayText.text = data.fragmentText;
+                fragmentPanel.SetActive(true);
+                displayTimer = displayDuration;
                 PlaySound(fragmentClip);
                 Destroy(other.gameObject);
+
+                Debug.Log($"Collected fragment. Current: {collectedFragments}/{totalFragments}");
+
+                if (collectedFragments == totalFragments)
+                {
+                    allFragmentCollected = true;
+                 Debug.Log("All fragments collected!");
+                }
             }
         }
-        else  if (other.CompareTag("Exit") && collectedTokens == totalTokens)
+        else if (other.CompareTag("Exit") && collectedTokens == totalTokens)
         {
             GameWin();
         }
-        
-       
-
     }
 
     void UpdateTokenUI()
@@ -188,12 +265,28 @@ public class player : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+    // 集齐所有碎片时显示故事面板
+        if (allFragmentCollected && GameManager.Instance != null && GameManager.Instance.story != null && GameManager.Instance.story.fullStory != null && GameManager.Instance.story.fullStory.Length > 0)
+        {
+        // 设置面板内的文本
+            storyText.text = GameManager.Instance.story.fullStory[0];
+        // 显示整个面板
+            storyPanel.SetActive(true);
+        }
     }
     void PlaySound(AudioClip clip)
     {
         if (clip != null && audioSource != null)
         {
             audioSource.PlayOneShot(clip);
+        }
+    }
+
+    public void CloseStoryPanel()
+    {
+        if (storyPanel != null)
+        {
+            storyPanel.SetActive(false);
         }
     }
 
