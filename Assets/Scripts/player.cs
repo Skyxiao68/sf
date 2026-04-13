@@ -64,6 +64,10 @@ public class player : MonoBehaviour
     public float deceleration = 10f;
     public float currentSpeed = 0f; 
 
+    [Header("Smooth Camera")]
+    public float rotateSmoothTime = 0.1f;
+    private float currentRotateVel = 0f; 
+
     private void Awake()
     {
         inputControl = new Player_Input();
@@ -152,9 +156,9 @@ public class player : MonoBehaviour
         if(isGameWin) return;
 
         Vector2 inputLook = inputControl.Player.Look.ReadValue<Vector2>(); 
-        float mouseX = inputLook.x * rotateSpeed * Time.deltaTime;
-        
-        transform.Rotate(0, mouseX, 0); 
+        float targetRotate = inputLook.x * rotateSpeed * Time.deltaTime;
+        float smoothRotate = Mathf.SmoothDamp(0, targetRotate, ref currentRotateVel, rotateSmoothTime);
+        transform.Rotate(0, smoothRotate, 0);
         
 
         inputDir = inputControl.Player.Move.ReadValue<Vector2>();
@@ -185,7 +189,6 @@ public class player : MonoBehaviour
         if (collectedTokens == totalTokens)
             {
                 UnlockExit();
-
             }
 
 
