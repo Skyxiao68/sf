@@ -59,6 +59,11 @@ public class player : MonoBehaviour
     public TMP_Text storyText;
     private bool allFragmentCollected = false; 
 
+    [Header("Smooth Movement")]
+    public float acceleration = 10f;
+    public float deceleration = 10f;
+    public float currentSpeed = 0f; 
+
     private void Awake()
     {
         inputControl = new Player_Input();
@@ -155,10 +160,17 @@ public class player : MonoBehaviour
         inputDir = inputControl.Player.Move.ReadValue<Vector2>();
         float xMove = inputDir.x;
         float yMove = inputDir.y;
-       
-        moveDir =  transform.forward * yMove  + transform.right * xMove;
-        moveDir.y = 0;
-        moveDir.Normalize();
+        Vector3 targetDir = transform.forward * yMove + transform.right * xMove;
+        targetDir.Normalize();
+        if (targetDir.magnitude > 0.1f)
+        {
+            currentSpeed = Mathf.Lerp(currentSpeed, moveSpeed, acceleration * Time.deltaTime);
+        }
+        else
+        {
+            currentSpeed = Mathf.Lerp(currentSpeed, 0f, deceleration * Time.deltaTime);
+        }
+
         cc.Move(moveDir * moveSpeed * Time.deltaTime);
 
         if (displayTimer > 0)
@@ -176,6 +188,8 @@ public class player : MonoBehaviour
 
             }
 
+
+                         
     }
     
 
