@@ -171,7 +171,7 @@ public class player : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, 0f, deceleration * Time.deltaTime);
         }
 
-        cc.Move(moveDir * moveSpeed * Time.deltaTime);
+        cc.Move(targetDir * currentSpeed * Time.deltaTime);
 
         if (displayTimer > 0)
         {
