@@ -202,6 +202,8 @@ public class player : MonoBehaviour
 
         if (other.CompareTag("Token") || other.CompareTag("Fragment"))
         {
+            CameraShake.instance?.Shake(0.1f, 0.5f);
+            
             if (pickupEffectPrefab != null)
             {
                 GameObject effect = Instantiate(pickupEffectPrefab, other.transform.position, Quaternion.identity);

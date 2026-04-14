@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 21834595}
   - component: {fileID: 21834594}
   - component: {fileID: 21834593}
+  - component: {fileID: 21834596}
   m_Layer: 0
   m_Name: Token_03
   m_TagString: Token
@@ -231,6 +232,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21834591}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &21834596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21834591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1001 &40902507
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -291,7 +307,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1826503307}
   m_SourcePrefab: {fileID: 100100000, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
 --- !u!1 &117582854
 GameObject:
@@ -454,6 +473,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 169664511}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &188820848 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+  m_PrefabInstance: {fileID: 40902507}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &335845251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1502,6 +1526,7 @@ GameObject:
   - component: {fileID: 527242245}
   - component: {fileID: 527242244}
   - component: {fileID: 527242243}
+  - component: {fileID: 527242246}
   m_Layer: 0
   m_Name: Token_04
   m_TagString: Token
@@ -1602,6 +1627,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527242241}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &527242246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527242241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &537346055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1714,6 +1754,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537346055}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &598234085 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+  m_PrefabInstance: {fileID: 716301863}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &703843542
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1774,7 +1819,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1851259753}
   m_SourcePrefab: {fileID: 100100000, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
 --- !u!1001 &716301863
 PrefabInstance:
@@ -1836,7 +1884,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1241213421}
   m_SourcePrefab: {fileID: 100100000, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
 --- !u!1 &737130770
 GameObject:
@@ -2402,6 +2453,7 @@ GameObject:
   - component: {fileID: 958815202}
   - component: {fileID: 958815201}
   - component: {fileID: 958815200}
+  - component: {fileID: 958815203}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -2527,6 +2579,18 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &958815203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958815197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3876a4f46093aac498c8131b119134d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
 --- !u!1 &1024158545
 GameObject:
   m_ObjectHideFlags: 0
@@ -2938,6 +3002,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180354506}
   m_CullTransparentMesh: 1
+--- !u!1 &1183120746 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
+  m_PrefabInstance: {fileID: 703843542}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1208913723
 GameObject:
   m_ObjectHideFlags: 0
@@ -2950,6 +3019,7 @@ GameObject:
   - component: {fileID: 1208913727}
   - component: {fileID: 1208913726}
   - component: {fileID: 1208913725}
+  - component: {fileID: 1208913728}
   m_Layer: 0
   m_Name: Token_05
   m_TagString: Token
@@ -3050,6 +3120,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208913723}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1208913728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208913723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &1239931489
 GameObject:
   m_ObjectHideFlags: 0
@@ -3130,6 +3215,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7192645595327743599, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
   m_PrefabInstance: {fileID: 716301863}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1241213421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598234085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &1282661118
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3242,7 @@ GameObject:
   - component: {fileID: 1282661122}
   - component: {fileID: 1282661121}
   - component: {fileID: 1282661120}
+  - component: {fileID: 1282661123}
   m_Layer: 0
   m_Name: Token_02
   m_TagString: Token
@@ -3242,6 +3343,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282661118}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1282661123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282661118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &1339699374
 GameObject:
   m_ObjectHideFlags: 0
@@ -5364,11 +5480,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7192645595327743599, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
   m_PrefabInstance: {fileID: 40902507}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1826503307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188820848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!4 &1851259748 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7192645595327743599, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
   m_PrefabInstance: {fileID: 703843542}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1851259753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183120746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &1870526570
 GameObject:
   m_ObjectHideFlags: 0
@@ -5493,6 +5639,7 @@ GameObject:
   - component: {fileID: 1882780448}
   - component: {fileID: 1882780447}
   - component: {fileID: 1882780446}
+  - component: {fileID: 1882780449}
   m_Layer: 0
   m_Name: Token_01
   m_TagString: Token
@@ -5593,6 +5740,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1882780444}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1882780449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882780444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2
 --- !u!1 &1912245310
 GameObject:
   m_ObjectHideFlags: 0
@@ -7897,11 +8059,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1509235192}
     m_Modifications:
-    - target: {fileID: 61069746240310088, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
-      propertyPath: fragmentText
-      value: "\u201CA broken compass points inward. Inscribed: \u2018The heart of
-        the labyrinth holds the truth.\u2019\u201D"
-      objectReference: {fileID: 0}
     - target: {fileID: 3120976790414836588, guid: b11a0254df5682147a452ba40e4881c0, type: 3}
       propertyPath: m_Name
       value: MemFragment
