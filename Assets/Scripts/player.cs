@@ -68,6 +68,11 @@ public class player : MonoBehaviour
     public float rotateSmoothTime = 0.1f;
     private float currentRotateVel = 0f; 
 
+    [Header("Exit Hint")]
+    public float hintDistance = 5f; 
+    public GameObject exitHintPanel; 
+    public TMP_Text exitHintText; 
+
     private void Awake()
     {
         inputControl = new Player_Input();
@@ -150,7 +155,7 @@ public class player : MonoBehaviour
     }
     
 
-    // Update is called once per frame
+    
     void Update()
     {
         if(isGameWin) return;
@@ -191,8 +196,23 @@ public class player : MonoBehaviour
                 UnlockExit();
             }
 
-
-                         
+        if (exit != null && collectedTokens < totalTokens)
+        {
+            float disToExit = Vector3.Distance(transform.position, exit.transform.position);
+            if (disToExit < hintDistance)
+            {
+                exitHintPanel.SetActive(true);
+                exitHintText.text = $"Need {totalTokens - collectedTokens} more tokens to unlock exit!";
+            }
+            else
+            {
+                exitHintPanel.SetActive(false);
+            }
+        }
+        else
+        {
+            exitHintPanel.SetActive(false);
+        }                 
     }
     
 
@@ -203,7 +223,7 @@ public class player : MonoBehaviour
         if (other.CompareTag("Token") || other.CompareTag("Fragment"))
         {
             CameraShake.instance?.Shake(0.1f, 0.5f);
-            
+
             if (pickupEffectPrefab != null)
             {
                 GameObject effect = Instantiate(pickupEffectPrefab, other.transform.position, Quaternion.identity);
