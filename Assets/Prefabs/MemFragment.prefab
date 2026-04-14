@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1625403127252566408}
   - component: {fileID: 7667635979558310416}
   - component: {fileID: 61069746240310088}
+  - component: {fileID: 3719117698925115599}
   m_Layer: 0
   m_Name: MemFragment
   m_TagString: Fragment
@@ -125,4 +126,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a5787f826cbbf4b97f91165fa57011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FragmentData
-  fragmentText: This is a memory fragment.
+  fragmentText: "\u201CA broken compass points inward. Inscribed: \u2018The heart
+    of the labyrinth holds the truth.\u2019\u201D"
+--- !u!114 &3719117698925115599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3120976790414836588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f8bbe9fcd201e4c94d639d25ab0b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectibleAnimations
+  rotateSpeed: 90
+  floatSpeed: 1
+  floatHeight: 0.2

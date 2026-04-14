@@ -4342,7 +4342,7 @@ MonoBehaviour:
   inputDir: {x: 0, y: 0}
   collectedTokens: 0
   moveSpeed: 2
-  rotateSpeed: 20
+  rotateSpeed: 100
   totalTokens: 5
   exit: {fileID: 1115583445}
   matExitUnlocked: {fileID: 2100000, guid: e0becbc689ca82a4e9b82a0f708468de, type: 2}
@@ -4359,6 +4359,10 @@ MonoBehaviour:
   pickupEffectPrefab: {fileID: 3916651965950713508, guid: 354608962a7b6dc4980cf33bc362ddb8, type: 3}
   storyPanel: {fileID: 1801846049}
   storyText: {fileID: 737130772}
+  acceleration: 10
+  deceleration: 10
+  currentSpeed: 0
+  rotateSmoothTime: 0.1
 --- !u!114 &1651481129
 MonoBehaviour:
   m_ObjectHideFlags: 0
