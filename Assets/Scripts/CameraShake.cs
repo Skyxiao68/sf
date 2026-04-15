@@ -1,11 +1,12 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class CameraShake : MonoBehaviour
 {
     public static CameraShake instance;
     private Vector3 originalPos; 
-    private float shakeDuration = 0f; 
-    private float shakeMagnitude = 0.1f; 
+   
 
 
     void Awake()
@@ -16,21 +17,23 @@ public class CameraShake : MonoBehaviour
 
     public void Shake(float duration, float magnitude)
     {
-        shakeDuration = duration; 
-        shakeMagnitude = magnitude;
+        StartCoroutine(DoShake(duration, magnitude));
     }
 
-    
-    void Update()
+    IEnumerator DoShake(float duration, float magnitude)
     {
-      if (shakeDuration > 0)
+        float elapsed = 0f; 
+        while (elapsed < duration)
         {
-            transform.localPosition = originalPos + Random.insideUnitSphere * shakeMagnitude;
-            shakeDuration -= Time.deltaTime;
-        }   
-        else
-        {
-            transform.localPosition = originalPos;
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
+            transform.localPosition = originalPos + new Vector3(x, y, 0);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
+
+        transform.localPosition = originalPos;
+
     }
+   
 }

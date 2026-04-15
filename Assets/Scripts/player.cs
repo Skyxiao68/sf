@@ -60,8 +60,8 @@ public class player : MonoBehaviour
     private bool allFragmentCollected = false; 
 
     [Header("Smooth Movement")]
-    public float acceleration = 10f;
-    public float deceleration = 10f;
+    public float acceleration = 8f;
+    public float deceleration = 12f;
     public float currentSpeed = 0f; 
 
     [Header("Smooth Camera")]
@@ -171,6 +171,7 @@ public class player : MonoBehaviour
         float yMove = inputDir.y;
         Vector3 targetDir = transform.forward * yMove + transform.right * xMove;
         targetDir.Normalize();
+
         if (targetDir.magnitude > 0.1f)
         {
             currentSpeed = Mathf.Lerp(currentSpeed, moveSpeed, acceleration * Time.deltaTime);
@@ -329,4 +330,8 @@ public class player : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        inputControl?.Dispose();
+    }
 }

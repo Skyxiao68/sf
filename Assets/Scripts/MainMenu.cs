@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [Header("Scene Settings")]
-    public string difficultySceneName = "DifficultySelection"; // 难度选择场景名
-    public string gameSceneName = "Level1";                      // 可选：直接开始游戏时用
+    public string difficultySceneName = "DifficultySelection"; 
+    public string gameSceneName = "Level1";                      
 
     void Start()
     {
@@ -16,19 +16,38 @@ public class MainMenu : MonoBehaviour
    
     public void GoToDifficultySelection()
     {
-        SceneManager.LoadScene(difficultySceneName);
+        if(SceneFadeManager.Instance!= null)
+        {
+            SceneFadeManager.Instance.LoadScene(difficultySceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(difficultySceneName);
+        }
     }
 
-        public void StartGameDirectly()
+    public void StartGameDirectly()
     {
         
         if (GameManager.Instance != null)
         {
             GameManager.Instance.SetDifficulty(GameManager.Difficulty.Normal);
+
+            if(SceneFadeManager.Instance!= null)
+            {
+                SceneFadeManager.Instance.LoadScene(gameSceneName);
+            }
         }
         else
         {
-            SceneManager.LoadScene(gameSceneName);
+            if (SceneFadeManager.Instance!= null)
+            {
+                SceneFadeManager.Instance.LoadScene(gameSceneName);
+            }
+            else
+            {
+                SceneManager.LoadScene(gameSceneName);
+            }
         }
     }
 
