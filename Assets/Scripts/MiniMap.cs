@@ -4,65 +4,85 @@ using System.Collections.Generic;
 
 public class MiniMap : MonoBehaviour
 {
-    [Header("Mini Map Settings")]
+    [Header("References")]
     public Transform player;
     public Transform exit;
     public Image mapTokenPrefab;
     public Image mapPlayer;
     public Image mapExit;
-    public RectTransform mapPanel;
+    public RectTransform mapPanel;          
 
-    
+    private List<Image> tokenIcons = new List<Image>();
     private List<GameObject> tokens = new List<GameObject>();
-    private List<Image> mapTokens = new List<Image>();
 
-    private Vector3 mapOffset;
+   
+    private Bounds mazeBounds = new Bounds(Vector3.zero, new Vector3(10, 0, 10)); // 中心0,0 范围-5..5
 
     void Start()
     {
-        
-        GameObject[] allTokens = GameObject.FindGameObjectsWithTag("Token");
-        tokens.Clear();
-        mapTokens.Clear();
-
-        foreach (GameObject token in allTokens)
-        {
-            tokens.Add(token);
-            Image newIcon = Instantiate(mapTokenPrefab, mapPanel);
-            newIcon.rectTransform.localScale = Vector3.one;
-            mapTokens.Add(newIcon);
-        }
-
-        mapOffset = new Vector3(5, 0, 5);
+        RefreshTokenList();
+       
     }
 
     void Update()
     {
-        
+        RefreshTokenListIfNeeded();
+
         UpdateMapPos(player.position, mapPlayer.rectTransform);
         UpdateMapPos(exit.position, mapExit.rectTransform);
 
-        
         for (int i = 0; i < tokens.Count; i++)
         {
             if (tokens[i] != null && tokens[i].activeInHierarchy)
             {
-                
-                mapTokens[i].gameObject.SetActive(true);
-                UpdateMapPos(tokens[i].transform.position, mapTokens[i].rectTransform);
+                tokenIcons[i].gameObject.SetActive(true);
+                UpdateMapPos(tokens[i].transform.position, tokenIcons[i].rectTransform);
             }
             else
             {
-                
-                mapTokens[i].gameObject.SetActive(false);
+                tokenIcons[i].gameObject.SetActive(false);
             }
         }
     }
 
-    void UpdateMapPos(Vector3 worldPos, RectTransform uiPos)
+    void RefreshTokenListIfNeeded()
     {
-        float scale = 20f;
-        Vector3 localPos = new Vector3(worldPos.x - mapOffset.x, 0, worldPos.z - mapOffset.z);
-        uiPos.anchoredPosition = new Vector2(localPos.x * scale, localPos.z * scale);
+        GameObject[] currentTokens = GameObject.FindGameObjectsWithTag("Token");
+        if (currentTokens.Length != tokens.Count)
+            RefreshTokenList();
+    }
+
+    void RefreshTokenList()
+    {
+        foreach (var icon in tokenIcons)
+            if (icon != null) Destroy(icon.gameObject);
+        tokenIcons.Clear();
+        tokens.Clear();
+
+        GameObject[] allTokens = GameObject.FindGameObjectsWithTag("Token");
+        tokens.AddRange(allTokens);
+
+        foreach (var token in tokens)
+        {
+            Image icon = Instantiate(mapTokenPrefab, mapPanel);
+            icon.rectTransform.localScale = Vector3.one;
+            tokenIcons.Add(icon);
+        }
+    }
+
+    
+    void UpdateMapPos(Vector3 worldPos, RectTransform uiElement)
+    {
+        
+        float tX = (worldPos.x - mazeBounds.min.x) / mazeBounds.size.x;
+        float tZ = (worldPos.z - mazeBounds.min.z) / mazeBounds.size.z;
+
+       
+        Vector2 panelSize = mapPanel.rect.size;
+        float localX = (tX - 0.5f) * panelSize.x;
+        float localY = (tZ - 0.5f) * panelSize.y;
+
+       
+        uiElement.anchoredPosition = new Vector2(localX, localY);
     }
 }
