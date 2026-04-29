@@ -15,11 +15,20 @@ EditorBuildSettings:
     path: Assets/Scenes/DifficultySelection.unity
     guid: e3e26d2df2242f04eba3a542596ab613
   - enabled: 1
+    path: Assets/Scenes/LevelSelection.unity
+    guid: 4350af267a85678458f20c325cf193fc
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
-    guid: 45cb8d09f100d7b4d9cc962aea80be87
+    guid: e12f693aff2a82f42a93a3f36ca25123
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: 4ad4a651e86a01c458d2861545d50d2b
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: e1c26603ae524ae42868c6097080a133
+  - enabled: 1
+    path: Assets/Scenes/SpeedrunSelection.unity
+    guid: c7331a850908c0a4faf08e45f3fad264
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

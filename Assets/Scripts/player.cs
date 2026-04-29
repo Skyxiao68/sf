@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
+using System.Collections;
+using UnityEngine.SceneManagement;
+
 
 
 public class player : MonoBehaviour
@@ -21,6 +24,10 @@ public class player : MonoBehaviour
     public float rotateSpeed = 100f;
     private CharacterController cc;
     private Vector3 moveDir; 
+
+    public TMP_Text timerText; 
+    
+    private float levelStartTime; 
     
     
 
@@ -128,7 +135,28 @@ public class player : MonoBehaviour
       UpdateTokenUI();
 
       UpdateFragmentUI();
-      
+
+     if (GameManager.Instance != null && GameManager.Instance.isSpeedrunModeActive && timerText != null)
+    {
+        timerText.gameObject.SetActive(true);
+        levelStartTime = Time.time;
+        timerText.text = "Time: 0.00";   // 初始化显示
+    }
+
+     if (GameManager.Instance != null && GameManager.Instance.isSpeedrunModeActive)
+    {
+        // 禁用场景中所有碎片物体
+        GameObject[] fragments = GameObject.FindGameObjectsWithTag("Fragment");
+        foreach (GameObject frag in fragments)
+        {
+            if (frag != null) frag.SetActive(false);
+        }
+
+        // 隐藏碎片计数文本和侧边栏面板
+        if (fragmentCountText != null) fragmentCountText.gameObject.SetActive(false);
+        if (fragmentPanel != null) fragmentPanel.SetActive(false);
+    }
+
     }
 
     void AdjustCollectibles()
@@ -213,7 +241,13 @@ public class player : MonoBehaviour
         else
         {
             exitHintPanel.SetActive(false);
-        }                 
+        }            
+
+         if (!isGameWin && timerText != null && timerText.gameObject.activeSelf)
+        {
+            float elapsed = Time.time - levelStartTime;
+            timerText.text = "Time: " + elapsed.ToString("F2");
+        }    
     }
     
 
@@ -276,10 +310,14 @@ public class player : MonoBehaviour
 
     void UpdateFragmentUI()
     {
+        if (GameManager.Instance != null && GameManager.Instance.isSpeedrunModeActive) return;
+        
         if (fragmentCountText != null)
         {
             fragmentCountText.text = "Fragments: " + collectedFragments + "/" + totalFragments;
         }
+
+        
     }
 
     void UnlockExit()
@@ -297,23 +335,80 @@ public class player : MonoBehaviour
     }
 
     void GameWin()
-    {
-        isGameWin = true;
-        winText.gameObject.SetActive(true);
-        winText.text = "You Win! Time: " + Mathf.Round(Time.time) + "s";
-        PlaySound(winClip);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+{
+    isGameWin = true;
 
-    // 集齐所有碎片时显示故事面板
-        if (allFragmentCollected && GameManager.Instance != null && GameManager.Instance.story != null && GameManager.Instance.story.fullStory != null && GameManager.Instance.story.fullStory.Length > 0)
+    // 计算通关用时
+    float finishTime = Time.time - levelStartTime;
+
+    // 显示胜利文本（包含时间）
+    winText.gameObject.SetActive(true);
+    winText.text = "You Win! Time: " + finishTime.ToString("F2") + "s";
+    PlaySound(winClip);
+
+    Cursor.lockState = CursorLockMode.None;
+    Cursor.visible = true;
+
+    // 显示故事面板（如果集齐所有碎片）
+    if (allFragmentCollected)
+    {
+        string story = GetLevelStory(GetCurrentLevelIndex());
+        if (!string.IsNullOrEmpty(story))
         {
-        // 设置面板内的文本
-            storyText.text = GameManager.Instance.story.fullStory[0];
-        // 显示整个面板
+            storyText.text = story;
             storyPanel.SetActive(true);
         }
     }
+
+    // 通知 GameManager 通关（解锁下一关）
+    int currentLevel = GetCurrentLevelIndex();
+    if (GameManager.Instance != null)
+    {
+        GameManager.Instance.CompleteLevel(currentLevel);
+
+        // 如果当前是极速模式，则记录最佳时间
+        if (GameManager.Instance.isSpeedrunModeActive)
+        {
+            GameManager.Instance.RegisterBestTime(currentLevel, finishTime);
+            // 退出极速模式，避免影响下次普通游戏
+            GameManager.Instance.isSpeedrunModeActive = false;
+        }
+    }
+
+    // 延迟返回关卡选择场景
+    StartCoroutine(ReturnToLevelSelect());
+}
+
+    string GetLevelStory(int level)
+{
+    switch (level)
+    {
+        case 1:
+            return "You stand before the first exit, looking back at the winding path behind you. Memories flood back: this was the garden where you played as a child. Those walls are not walls – they are trimmed hedges. Those coins are your lost marbles. You begin to sense that this maze hides a past you had forgotten.";
+        case 2:
+            return "The wind at the crossroads clears your hesitation. You remember that summer when you faced two choices: leave home to chase your dreams, or stay to protect your family. You chose the former, and never looked back. Every left or right turn in this maze echoes that decision. Now you understand – there is no right or wrong, only the journey.";
+        case 3:
+            return "In the heart of the hall, you place all the coins and fragments you collected. They melt into an image: you standing at the maze's entrance, but this time with a smile on your face. You realize that the entire maze was a training ground you built for yourself – to prepare you for the real world outside. The exit light is not an escape, but an embrace. You push the door open and step into a new adventure.";
+        default:
+            return "";
+    }
+}
+
+    IEnumerator ReturnToLevelSelect()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("LevelSelection");
+    }
+
+   int GetCurrentLevelIndex()
+    {
+        string name = SceneManager.GetActiveScene().name;
+        if (name == "Level1") return 1;
+        if (name == "Level2") return 2;
+        if (name == "Level3") return 3;
+        return 1;
+    }
+    
     void PlaySound(AudioClip clip)
     {
         if (clip != null && audioSource != null)

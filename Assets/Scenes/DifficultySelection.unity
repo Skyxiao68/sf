@@ -287,7 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed1f8960eb23a040bca21ab77c63595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultySelection
-  gameSceneName: Level1
+  levelSelectionSceneName: LevelSelection
   mainMenuSceneName: Main Menu
   easyButton: {fileID: 1251295858}
   normalButton: {fileID: 1666545631}
