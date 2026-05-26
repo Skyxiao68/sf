@@ -5,39 +5,69 @@ using TMPro;
 
 public class SpeedrunSelection : MonoBehaviour
 {
-    public Button[] levelButtons;          // 依次绑定 Level1, Level2, Level3 的按钮
-    public TMP_Text[] bestTimeTexts;           // 对应每个按钮下方显示最佳时间的文本
+    public Button[] levelButtons;
+    public TMP_Text[] normalBestTimeTexts;
+    public TMP_Text[] challengeBestTimeTexts;
+    public Toggle advancedChallengeToggle;   // 新增：挑战模式开关
 
     void Start()
     {
-        UpdateBestTimesUI();
+        UpdateBestTimes();
+
+        // 绑定关卡按钮
         for (int i = 0; i < levelButtons.Length; i++)
         {
             int levelIndex = i + 1;
-            levelButtons[i].onClick.AddListener(() => LoadLevel(levelIndex));
+            levelButtons[i].onClick.AddListener(() => LoadNormalSpeedrun(levelIndex));
+        }
+
+        // 初始化挑战模式开关（与 GameManager 同步）
+        if (advancedChallengeToggle != null && GameManager.Instance != null)
+        {
+            advancedChallengeToggle.isOn = GameManager.Instance.isAdvancedChallengeEnabled;
+            advancedChallengeToggle.onValueChanged.AddListener(OnAdvancedChallengeToggled);
         }
     }
 
-    void UpdateBestTimesUI()
+    void OnEnable()
+    {
+        UpdateBestTimes();
+        // 同步开关状态（以防其他场景修改过）
+        if (advancedChallengeToggle != null && GameManager.Instance != null)
+        {
+            advancedChallengeToggle.isOn = GameManager.Instance.isAdvancedChallengeEnabled;
+        }
+    }
+
+    void UpdateBestTimes()
     {
         if (GameManager.Instance == null) return;
-        for (int i = 0; i < bestTimeTexts.Length; i++)
+
+        for (int i = 0; i < normalBestTimeTexts.Length && i < GameManager.Instance.bestTimes.Length; i++)
         {
-            float best = GameManager.Instance.bestTimes[i];
-            if (best > 0)
-                bestTimeTexts[i].text = "Best: " + best.ToString("F2") + "s";
-            else
-                bestTimeTexts[i].text = "Best: --";
+            float t = GameManager.Instance.bestTimes[i];
+            normalBestTimeTexts[i].text = t > 0 ? $"Best: {t:F2}s" : "Best: --";
+        }
+
+        for (int i = 0; i < challengeBestTimeTexts.Length && i < GameManager.Instance.challengeBestTimes.Length; i++)
+        {
+            float t = GameManager.Instance.challengeBestTimes[i];
+            challengeBestTimeTexts[i].text = t > 0 ? $"Challenge Best: {t:F2}s" : "Chal. Best: --";
         }
     }
 
-    void LoadLevel(int level)
+    void OnAdvancedChallengeToggled(bool isOn)
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetAdvancedChallenge(isOn);
+    }
+
+    void LoadNormalSpeedrun(int level)
     {
         if (GameManager.Instance != null)
         {
             GameManager.Instance.isSpeedrunModeActive = true;
-            // 可选：极速模式下强制使用 Normal 难度（可根据需要调整）
-            // GameManager.Instance.currentDifficulty = GameManager.Difficulty.Normal;
+            // 注意：挑战模式和极速模式是独立的，这里只设置极速模式标志
         }
         SceneManager.LoadScene("Level" + level);
     }

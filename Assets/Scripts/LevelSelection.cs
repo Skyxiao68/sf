@@ -6,27 +6,45 @@ using TMPro;
 public class LevelSelection : MonoBehaviour
 {
     public Button speedrunButton;
-    public Button[] levelButtons;      
-    public TMP_Text[] statusTexts;           
-    public GameObject[] lockIcons;       
+    public Button[] levelButtons;
+    public TMP_Text[] statusTexts;
+    public GameObject[] lockIcons;
+    public Toggle advancedChallengeToggle;   // 挑战模式开关（放在这里）
 
     void Start()
     {
         UpdateUI();
+
         if (speedrunButton != null)
-        {   
+        {
             bool unlocked = GameManager.Instance != null && GameManager.Instance.isSpeedrunModeUnlocked;
             speedrunButton.gameObject.SetActive(unlocked);
             if (unlocked)
-            {
                 speedrunButton.onClick.AddListener(GoToSpeedrunMode);
-            }
+        }
+
+        if (advancedChallengeToggle != null && GameManager.Instance != null)
+        {
+            advancedChallengeToggle.isOn = GameManager.Instance.isAdvancedChallengeEnabled;
+            advancedChallengeToggle.onValueChanged.AddListener(OnAdvancedChallengeToggled);
         }
     }
 
-    public void GoToSpeedrunMode()
+    void OnEnable()
     {
-        SceneManager.LoadScene("SpeedrunSelection");
+        UpdateUI();
+
+        if (advancedChallengeToggle != null && GameManager.Instance != null)
+        {
+            advancedChallengeToggle.isOn = GameManager.Instance.isAdvancedChallengeEnabled;
+            advancedChallengeToggle.onValueChanged.AddListener(OnAdvancedChallengeToggled);
+        }
+
+        void OnAdvancedChallengeToggled(bool isOn)
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetAdvancedChallenge(isOn);
+        }
     }
 
     void UpdateUI()
@@ -42,6 +60,17 @@ public class LevelSelection : MonoBehaviour
             if (statusTexts != null && statusTexts.Length > i)
                 statusTexts[i].text = unlocked ? "Available" : "Locked";
         }
+    }
+
+    void OnAdvancedChallengeToggled(bool isOn)
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetAdvancedChallenge(isOn);
+    }
+
+    public void GoToSpeedrunMode()
+    {
+        SceneManager.LoadScene("SpeedrunSelection");
     }
 
     public void OnLevelButtonClick(int levelIndex)
