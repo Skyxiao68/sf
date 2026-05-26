@@ -51,6 +51,11 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void GoToMemoryGallary()
+    {
+        SceneManager.LoadScene("MemoryGallary");  
+    }
+
     public void QuitGame()
     {
         Debug.Log("Quitting game.");

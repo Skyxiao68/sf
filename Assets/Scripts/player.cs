@@ -180,6 +180,11 @@ public class player : MonoBehaviour
             fragments[i].SetActive(active);
             Debug.Log($"Fragment {i}: set active = {active}, name = {fragments[i].name}");
         }
+
+        if (GameManager.Instance != null && GameManager.Instance.isAdvancedChallengeEnabled)
+        {
+            totalTokens += 2; // 增加额外需求
+        }
     }
     
 
@@ -288,6 +293,8 @@ public class player : MonoBehaviour
                 PlaySound(fragmentClip);
                 Destroy(other.gameObject);
 
+                GameManager.Instance?.AddGlobalFragment(GetCurrentLevelIndex());
+
                 Debug.Log($"Collected fragment. Current: {collectedFragments}/{totalFragments}");
 
                 if (collectedFragments == totalFragments)
@@ -337,11 +344,9 @@ public class player : MonoBehaviour
     void GameWin()
 {
     isGameWin = true;
-
-    // 计算通关用时
+    
     float finishTime = Time.time - levelStartTime;
 
-    // 显示胜利文本（包含时间）
     winText.gameObject.SetActive(true);
     winText.text = "You Win! Time: " + finishTime.ToString("F2") + "s";
     PlaySound(winClip);
@@ -349,7 +354,8 @@ public class player : MonoBehaviour
     Cursor.lockState = CursorLockMode.None;
     Cursor.visible = true;
 
-    // 显示故事面板（如果集齐所有碎片）
+    
+   
     if (allFragmentCollected)
     {
         string story = GetLevelStory(GetCurrentLevelIndex());
@@ -360,22 +366,63 @@ public class player : MonoBehaviour
         }
     }
 
-    // 通知 GameManager 通关（解锁下一关）
+    
     int currentLevel = GetCurrentLevelIndex();
+
+    if (currentLevel == 3 )
+        {
+            string endingText = "";
+            if (GameManager.Instance != null)
+            {
+                int total = GameManager.Instance.totalFragmentsCollectedOverall;
+                if (total == GameManager.TOTAL_FRAGMENTS_ALL_LEVELS)
+                {
+                    endingText = "You have pieced together the complete story of the maze. The maze is no longer a cage, but a memory cherished."; 
+                    GameManager.Instance.UnlockTrueEnding(); 
+                }
+                else if (total >=4 )
+                {
+                    endingText = "You have gathered memories of this maze, A fragment of the past emerges.";  
+                }
+                else
+                {
+                    endingText = "You found the exit. The memory of the maze slowly fades";
+                }
+
+                storyText.text = endingText;
+                storyPanel.SetActive(true);
+            } 
+            else
+            {
+                if (allFragmentCollected)
+                {
+                    string story = GetLevelStory(currentLevel); 
+                    if (!string.IsNullOrEmpty(story))
+                    {
+                        storyText.text = story;
+                        storyPanel.SetActive(true);
+                    }
+                    
+                }
+            }
+           
+        }
+        
+           
     if (GameManager.Instance != null)
     {
         GameManager.Instance.CompleteLevel(currentLevel);
 
-        // 如果当前是极速模式，则记录最佳时间
+       
         if (GameManager.Instance.isSpeedrunModeActive)
         {
             GameManager.Instance.RegisterBestTime(currentLevel, finishTime);
-            // 退出极速模式，避免影响下次普通游戏
+           
             GameManager.Instance.isSpeedrunModeActive = false;
         }
     }
 
-    // 延迟返回关卡选择场景
+   
     StartCoroutine(ReturnToLevelSelect());
 }
 
