@@ -8,6 +8,8 @@ TagManager:
   - Token
   - PauseMenu
   - Fragment
+  - TokenSpawnPoint
+  - ExitSpawnPoint
   layers:
   - Default
   - TransparentFX

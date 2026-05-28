@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using System.Linq; 
+using System.Linq;
 
 
 
@@ -34,7 +34,7 @@ public class player : MonoBehaviour
 
     [Header("Tokens and Pass")]
     public int totalTokens = 5;
-
+    public GameObject tokenPrefab;
     public GameObject exit;
     public Material matExitUnlocked;
 
@@ -95,6 +95,8 @@ public class player : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("player Start() executed");
+
         winText.gameObject.SetActive(false);
 
         if (fragmentPanel != null)
@@ -131,13 +133,9 @@ public class player : MonoBehaviour
 
         Debug.Log($"Total Tokens set to: {totalTokens}, Total Fragments set to: {totalFragments}  ");
 
-        UpdateSkin();
+        
 
-        AdjustCollectibles();
-
-        UpdateTokenUI();
-
-        UpdateFragmentUI();
+        
 
         if (GameManager.Instance != null && GameManager.Instance.isSpeedrunModeActive && timerText != null)
         {
@@ -160,42 +158,118 @@ public class player : MonoBehaviour
             if (fragmentPanel != null) fragmentPanel.SetActive(false);
         }
 
+        AdjustCollectibles();
+        
+        UpdateSkin();
+        
+        RandomExit(); // 在开始时随机移动出口
+
+        UpdateTokenUI();
+
+        UpdateFragmentUI();
+
     }
 
     public void UpdateSkin()
     {
+        Debug.Log("UpdateSkin() called");
+
         Material mat = GameManager.Instance?.GetCurrentSkinMaterial();
+        Debug.Log($"GetCurrentSkinMaterial returned: {(mat != null ? mat.name : "Null")}");
+
         if (mat != null)
         {
             GetComponent<Renderer>().material = mat;
+            Debug.Log("Player skin updated to " + mat.name);
         }
+
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("GameManager.Instance is null in UpdateSkin() method");
+            return;
+        }
+
+
+
     }
+
     void AdjustCollectibles()
     {
-        // 先处理挑战模式增加需求（必须在激活前调整 totalTokens）
+        // 处理挑战模式增加需求（必须在动态生成前调整 totalTokens）
         if (GameManager.Instance != null && GameManager.Instance.isAdvancedChallengeEnabled)
         {
             totalTokens += 2;
         }
 
-        GameObject[] tokens = GameObject.FindGameObjectsWithTag("Token");
-        Debug.Log($"Found {tokens.Length} tokens in scene.");
+        // 动态生成随机硬币
+        SpawnRandomTokens();
 
-        for (int i = 0; i < tokens.Length; i++)
-        {
-            bool active = i < totalTokens;
-            tokens[i].SetActive(active);
-            Debug.Log($"Token {i}: set active = {active}, name = {tokens[i].name}");
-        }
-
+        // 调整碎片（保持不变）
         GameObject[] fragments = GameObject.FindGameObjectsWithTag("Fragment");
-        Debug.Log($"Found {fragments.Length} fragments in scene.");
-
         for (int i = 0; i < fragments.Length; i++)
         {
-            bool active = i < totalFragments;
-            fragments[i].SetActive(active);
-            Debug.Log($"Fragment {i}: set active = {active}, name = {fragments[i].name}");
+            fragments[i].SetActive(i < totalFragments);
+        }
+    }
+
+    void SpawnRandomTokens()
+    {
+        {
+            // 查找所有硬币生成点
+            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("TokenSpawnPoint");
+            if (spawnPoints.Length == 0)
+            {
+                Debug.LogWarning("No TokenSpawnPoint found in scene. Falling back to static coins.");
+                // 如果没有生成点，则回退到原有的静态硬币激活方式
+                AdjustStaticCoins();
+                return;
+            }
+
+            // 删除场景中已有的静态硬币（如果存在）
+            GameObject[] existingCoins = GameObject.FindGameObjectsWithTag("Token");
+            foreach (GameObject coin in existingCoins)
+            {
+                Destroy(coin);
+            }
+
+            // 随机打乱生成点顺序
+            for (int i = 0; i < spawnPoints.Length; i++)
+            {
+                int rand = Random.Range(i, spawnPoints.Length);
+                GameObject temp = spawnPoints[i];
+                spawnPoints[i] = spawnPoints[rand];
+                spawnPoints[rand] = temp;
+            }
+
+            // 实例化前 totalTokens 个硬币
+            for (int i = 0; i < totalTokens && i < spawnPoints.Length; i++)
+            {
+                Instantiate(tokenPrefab, spawnPoints[i].transform.position, Quaternion.identity);
+            }
+        }
+    }
+
+    void AdjustStaticCoins()
+    {
+        GameObject[] tokens = GameObject.FindGameObjectsWithTag("Token");
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            tokens[i].SetActive(i < totalTokens);
+        }
+    }
+
+    void RandomExit()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.isAdvancedChallengeEnabled)
+        {
+            GameObject[] exitPoints = GameObject.FindGameObjectsWithTag("ExitSpawnPoint");
+            if (exitPoints.Length > 0)
+            {
+                Vector3 newPos = exitPoints[Random.Range(0, exitPoints.Length)].transform.position;
+                exit.transform.position = newPos;
+                Debug.Log($"Exit move to {newPos} in challenge mode.");
+
+            }
         }
     }
 
@@ -315,7 +389,7 @@ public class player : MonoBehaviour
                     allFragmentCollected = true;
                     Debug.Log("All fragments collected!");
                 }
-                    
+
 
             }
         }
@@ -369,6 +443,8 @@ public class player : MonoBehaviour
         Cursor.visible = true;
 
         int currentLevel = GetCurrentLevelIndex();
+
+        
 
         // 获取全局全收集状态
         bool anyLevelFull = false;
@@ -435,6 +511,11 @@ public class player : MonoBehaviour
             {
                 GameManager.Instance.RegisterChallengeBestTime(currentLevel, finishTime);
             }
+        }
+
+        if (allFragmentCollected)
+        {
+            GameManager.Instance?.UnlockLevelReward(currentLevel, true);
         }
 
         StartCoroutine(ReturnToLevelSelect());

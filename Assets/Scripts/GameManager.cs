@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -170,6 +171,16 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    void Update()
+    {
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.f1Key.wasPressedThisFrame) SetPlayerSkin(0);
+        if (Keyboard.current.f2Key.wasPressedThisFrame) SetPlayerSkin(1);
+        if (Keyboard.current.f3Key.wasPressedThisFrame) SetPlayerSkin(2);
+        if (Keyboard.current.f4Key.wasPressedThisFrame) SetPlayerSkin(3);
+    }
+
     // ==================== 全局碎片与全收集 ====================
     public void AddGlobalFragment(int levelIndex, bool levelCompletedFully)
     {
@@ -188,6 +199,9 @@ public class GameManager : MonoBehaviour
         bool anyChange = false;
         foreach (var item in galleryItems)
         {
+            // 皮肤类型不由碎片数量自动解锁
+            if (item.type == GalleryItemType.Skin) continue;
+
             if (!item.isUnlocked && totalFragmentsCollectedOverall >= item.costFragments)
             {
                 item.isUnlocked = true;
@@ -198,12 +212,32 @@ public class GameManager : MonoBehaviour
         if (anyChange) SaveAllData();
     }
 
+    public void UnlockLevelReward(int levelIndex, bool fullyCollected)
+    {
+        if (!fullyCollected) return;
+
+        string skinName = "";
+        if (levelIndex == 1) skinName = "Green";
+        else if (levelIndex == 2) skinName = "Red";
+        else if (levelIndex == 3) skinName = "Gold";
+        else return;
+
+        GalleryItem skinItem = galleryItems.Find(item => item.type == GalleryItemType.Skin && item.itemName.Contains(skinName));
+        if (skinItem != null && !skinItem.isUnlocked)
+        {
+            skinItem.isUnlocked = true;
+            SaveAllData();
+            Debug.Log($"Unlocked {skinName} Skin for completing Level{levelIndex} with all fragments.");
+        }
+    }
+
     // ==================== 皮肤系统 ====================
     public void SetPlayerSkin(int index)
     {
         if (index < 0 || index >= playerSkins.Length) return;
         currentSkinIndex = index;
         SaveAllData();
+        Debug.Log($"Skin changed to index {index} ({playerSkins[index].name})");
         // 通知当前场景的玩家更新材质（需要在玩家脚本中实现 UpdateSkin 方法）
         var player = FindAnyObjectByType<player>();
         if (player != null) 
