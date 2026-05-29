@@ -22,7 +22,7 @@ public class player : MonoBehaviour
 
     [Header("Player Settings")]
     public float moveSpeed = 5f;
-    public float rotateSpeed = 100f;
+    public float rotateSpeed = 200f;
     private CharacterController cc;
     private Vector3 moveDir;
 
@@ -95,7 +95,12 @@ public class player : MonoBehaviour
 
     void Start()
     {
+
         Debug.Log("player Start() executed");
+
+        // 重置游戏胜利标志，确保新关卡可以正常暂停
+        if (GameManager.Instance != null)
+            GameManager.Instance.isGameFinished = false;
 
         winText.gameObject.SetActive(false);
 
@@ -133,9 +138,9 @@ public class player : MonoBehaviour
 
         Debug.Log($"Total Tokens set to: {totalTokens}, Total Fragments set to: {totalFragments}  ");
 
-        
 
-        
+
+
 
         if (GameManager.Instance != null && GameManager.Instance.isSpeedrunModeActive && timerText != null)
         {
@@ -159,9 +164,9 @@ public class player : MonoBehaviour
         }
 
         AdjustCollectibles();
-        
+
         UpdateSkin();
-        
+
         RandomExit(); // 在开始时随机移动出口
 
         UpdateTokenUI();
@@ -346,9 +351,13 @@ public class player : MonoBehaviour
     {
         Debug.Log($"Trigger entered with: {other.tag}");
 
+
         if (other.CompareTag("Token") || other.CompareTag("Fragment"))
         {
-            CameraShake.instance?.Shake(0.1f, 0.5f);
+            if (!GameManager.Instance.disableScreenShake)
+            {
+                CameraShake.instance?.Shake(0.1f, 0.5f);
+            }
 
             if (pickupEffectPrefab != null)
             {
@@ -444,7 +453,8 @@ public class player : MonoBehaviour
 
         int currentLevel = GetCurrentLevelIndex();
 
-        
+        StartCoroutine(AutoCloseStoryPanel(2f)); // 2秒后自动关闭
+
 
         // 获取全局全收集状态
         bool anyLevelFull = false;
@@ -455,32 +465,62 @@ public class player : MonoBehaviour
             allLevelsFull = System.Linq.Enumerable.All(GameManager.Instance.levelFullyCollected, x => x);
         }
 
+
+
+
+
         // 显示结局或故事
         if (currentLevel == 3)
         {
             string endingText = "";
+            bool allFull = false;
             if (GameManager.Instance != null)
             {
-                if (allLevelsFull && GameManager.Instance.totalFragmentsCollectedOverall == GameManager.TOTAL_FRAGMENTS_ALL_LEVELS)
+                bool anyFull = GameManager.Instance.levelFullyCollected.Any(x => x);
+                allFull = GameManager.Instance.levelFullyCollected.All(x => x);
+                bool hasAnyFragment = GameManager.Instance.anyFragmentCollectedOverall;
+
+                // 真结局条件：所有关卡全收集（不需要额外检查碎片总数）
+                if (allFull)
                 {
                     endingText = "You have pieced together the complete story of the maze. The maze is no longer a cage, but a memory cherished.";
                     GameManager.Instance.UnlockTrueEnding();
                 }
-                else if (anyLevelFull)
+                else if (anyFull)
                 {
                     endingText = "You have gathered the full memory of one part of the maze. A fragment of the past emerges clearly.";
                 }
-                else
+                else if (hasAnyFragment)
                 {
                     endingText = "You found the exit. The memory of the maze slowly fades.";
+                }
+                else
+                {
+                    endingText = "You found the exit.";
                 }
             }
             else
             {
                 endingText = "You found the exit.";
             }
-            storyText.text = endingText;
+
+            // 只有真结局时才附加第三关故事
+            if (allFull && GameManager.Instance != null)
+            {
+                string levelStory = GetLevelStory(3);
+                if (!string.IsNullOrEmpty(levelStory))
+                    storyText.text = levelStory + "\n\n" + endingText;
+                else
+                    storyText.text = endingText;
+            }
+            else
+            {
+                storyText.text = endingText;
+            }
             storyPanel.SetActive(true);
+
+            // 启动协程自动关闭故事面板（可选）
+            StartCoroutine(AutoCloseStoryPanel(4f));
         }
         else
         {
@@ -492,6 +532,7 @@ public class player : MonoBehaviour
                 {
                     storyText.text = story;
                     storyPanel.SetActive(true);
+                    StartCoroutine(AutoCloseStoryPanel(3f));
                 }
             }
         }
@@ -513,12 +554,35 @@ public class player : MonoBehaviour
             }
         }
 
+        
+
         if (allFragmentCollected)
         {
             GameManager.Instance?.UnlockLevelReward(currentLevel, true);
+            Debug.Log($"UnlockLevelReward called for Level {currentLevel}, allFragmentCollected={allFragmentCollected}");
+
+            if (allFragmentCollected)
+            {
+                GameManager.Instance?.UnlockLevelReward(currentLevel, true);
+            }
+
         }
 
-        StartCoroutine(ReturnToLevelSelect());
+        if (GameManager.Instance != null)
+            {
+                GameManager.Instance.isGameFinished = true;     
+            }
+
+        if (GameManager.Instance.isAdvancedChallengeEnabled)
+        {
+            int idx = currentLevel - 1;
+            if (!GameManager.Instance.challengeCompleted[idx])
+            {
+                GameManager.Instance.challengeCompleted[idx] = true;
+                GameManager.Instance.SaveAllData();
+            }
+        }
+
     }
 
     string GetLevelStory(int level)
@@ -536,11 +600,15 @@ public class player : MonoBehaviour
         }
     }
 
-    IEnumerator ReturnToLevelSelect()
+    IEnumerator AutoCloseStoryPanel(float delay)
     {
-        yield return new WaitForSeconds(5f);
-        SceneManager.LoadScene("LevelSelection");
+        yield return new WaitForSeconds(delay);
+        if (fragmentPanel != null)
+            fragmentPanel.SetActive(false);
+        
     }
+
+
 
     int GetCurrentLevelIndex()
     {

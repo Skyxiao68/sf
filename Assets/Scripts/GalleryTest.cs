@@ -4,9 +4,11 @@ using TMPro;
 
 public class TempGallery : MonoBehaviour
 {
+    public Button defaultBtn;   // 新增默认皮肤按钮
     public Button greenBtn;
     public Button redBtn;
     public Button goldBtn;
+    public TMP_Text defaultStatus;
     public TMP_Text greenStatus;
     public TMP_Text redStatus;
     public TMP_Text goldStatus;
@@ -14,6 +16,7 @@ public class TempGallery : MonoBehaviour
     void Start()
     {
         UpdateUnlockStatus();
+        defaultBtn.onClick.AddListener(() => ApplySkin(0));
         greenBtn.onClick.AddListener(() => ApplySkin(1));
         redBtn.onClick.AddListener(() => ApplySkin(2));
         goldBtn.onClick.AddListener(() => ApplySkin(3));
@@ -26,18 +29,29 @@ public class TempGallery : MonoBehaviour
 
     void UpdateUnlockStatus()
     {
-        int total = GameManager.Instance.totalFragmentsCollectedOverall;
-        greenBtn.interactable = total >= 4;
-        redBtn.interactable = total >= 8;
-        goldBtn.interactable = total >= 12;
+        // 从 GameManager 的画廊数据读取实际解锁状态
+        bool defaultUnlocked = GameManager.Instance.IsGalleryItemUnlocked(0); // 索引0应为默认皮肤（始终解锁）
+        bool greenUnlocked = GameManager.Instance.IsGalleryItemUnlocked(1);
+        bool redUnlocked = GameManager.Instance.IsGalleryItemUnlocked(2);
+        bool goldUnlocked = GameManager.Instance.IsGalleryItemUnlocked(3);
 
-        greenStatus.text = total >= 4 ? " Green Skin Unlocked" : $"locked  {4 - total}";
-        redStatus.text = total >= 8 ? "Purple skin Unlocked" : $"locked  {8 - total}";
-        goldStatus.text = total >= 12 ? "Gold skin Unlocked" : $"locked  {12 - total}";
+        defaultBtn.interactable = defaultUnlocked;
+        greenBtn.interactable = greenUnlocked;
+        redBtn.interactable = redUnlocked;
+        goldBtn.interactable = goldUnlocked;
+
+        defaultStatus.text = defaultUnlocked ? "Default Skin" : "Locked";
+        greenStatus.text = greenUnlocked ? "Green Skin" : "Locked (Fully Complete Level 1)";
+        redStatus.text = redUnlocked ? "Purple Skin" : "Locked (Fully Complete Level 2)";
+        goldStatus.text = goldUnlocked ? "Gold Skin" : "Locked (Complete True Ending)";
+
+        defaultBtn.interactable = true;
+        defaultStatus.text = "Default Skin"; 
     }
 
     void ApplySkin(int index)
     {
+        Debug.Log($"ApplySkin called with index {index}");
         GameManager.Instance.SetPlayerSkin(index);
     }
 }

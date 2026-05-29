@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEditor;
 using System.Collections;
+using Unity.VisualScripting;
+using NUnit.Framework;
 
 public class Manager : MonoBehaviour
 {
@@ -51,35 +53,35 @@ public class Manager : MonoBehaviour
 
     private void Update()
     {
-        if (inputControl.Player.Submit.WasPressedThisFrame())
-        {
-            gametut.SetActive(false);
-            Time.timeScale = 1f;   
+        bool isGameFinished = GameManager.Instance != null && GameManager.Instance.isGameFinished;
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        
-        
-        if (inputControl.Player.Pause.WasPressedThisFrame())
+        // 未通关时才处理 Submit 和 Pause
+        if (!isGameFinished)
         {
-            if (isPaused == true)
+            if (inputControl.Player.Submit.WasPressedThisFrame())
             {
-                ResumeGame();
+                gametut.SetActive(false);
+                Time.timeScale = 1f;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
-            else
+
+            if (inputControl.Player.Pause.WasPressedThisFrame())
             {
-                GamePause();
+                if (isPaused) ResumeGame();
+                else GamePause();
             }
         }
 
+        // 重启功能在任何时候都可用（但不会锁定光标）
         if (inputControl.Player.Restart.WasPressedThisFrame())
         {
+            // 注意：RestartGame 会重新加载场景，场景加载后光标状态会重置
             RestartGame();
         }
     }
 
-   
+
     public void GamePause()
     {
             Debug.Log("pause game");
@@ -147,6 +149,11 @@ public class Manager : MonoBehaviour
 
     public void RestartGame()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.isGameFinished = false;
+        }
+
        if(SceneFadeManager.Instance != null)
         {
             Time.timeScale = 1f;
@@ -160,6 +167,20 @@ public class Manager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         
+    }
+
+    public void LoadLevelSelect()
+    {
+        if (SceneFadeManager.Instance != null)
+        {
+            Time.timeScale = 1f;
+            SceneFadeManager.Instance.LoadScene("LevelSelection");
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("LevelSelection");
+        }
     }
 
     public void QuitGame()

@@ -9,7 +9,7 @@ public class LevelSelection : MonoBehaviour
     public Button[] levelButtons;
     public TMP_Text[] statusTexts;
     public GameObject[] lockIcons;
-    public Toggle advancedChallengeToggle;   // 挑战模式开关（放在这里）
+    public Toggle advancedChallengeToggle;
 
     void Start()
     {
@@ -34,16 +34,12 @@ public class LevelSelection : MonoBehaviour
     {
         UpdateUI();
 
+        // 确保开关状态同步，且避免重复添加监听
         if (advancedChallengeToggle != null && GameManager.Instance != null)
         {
             advancedChallengeToggle.isOn = GameManager.Instance.isAdvancedChallengeEnabled;
+            advancedChallengeToggle.onValueChanged.RemoveListener(OnAdvancedChallengeToggled);
             advancedChallengeToggle.onValueChanged.AddListener(OnAdvancedChallengeToggled);
-        }
-
-        void OnAdvancedChallengeToggled(bool isOn)
-        {
-            if (GameManager.Instance != null)
-                GameManager.Instance.SetAdvancedChallenge(isOn);
         }
     }
 
@@ -57,8 +53,19 @@ public class LevelSelection : MonoBehaviour
             levelButtons[i].interactable = unlocked;
             if (lockIcons != null && lockIcons.Length > i)
                 lockIcons[i].SetActive(!unlocked);
+
+            // 显示状态：优先显示挑战完成
             if (statusTexts != null && statusTexts.Length > i)
-                statusTexts[i].text = unlocked ? "Available" : "Locked";
+            {
+                if (GameManager.Instance != null && GameManager.Instance.challengeCompleted != null && GameManager.Instance.challengeCompleted[i])
+                {
+                    statusTexts[i].text = "Challenge Completed";
+                }
+                else
+                {
+                    statusTexts[i].text = unlocked ? "Available" : "Locked";
+                }
+            }
         }
     }
 

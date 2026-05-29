@@ -1,16 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     [Header("Scene Settings")]
     public string difficultySceneName = "DifficultySelection"; 
-    public string gameSceneName = "Level1";                      
+    public string gameSceneName = "Level1";     
+    public Toggle shakeToggle; 
+
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        shakeToggle.isOn = GameManager.Instance.disableScreenShake;
+        shakeToggle.onValueChanged.AddListener(val => GameManager.Instance.SetDisableScreenShake(val));
     }
 
    
